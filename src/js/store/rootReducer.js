@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
-import app from './reducers/AppReducer';
+import searchForm from './reducers/SearchFormReducer';
 
 const rootReducer = combineReducers({
-	app,
+	searchForm,
 });
 
 export default rootReducer;
