@@ -23,6 +23,7 @@ import {
 	validateMinLength,
 	validateNumber,
 	validateRegEx,
+	validateStartEndDate,
 } from '../../constants/CustomValidators';
 
 const initialState = {
@@ -82,11 +83,21 @@ const initialState = {
 	},
 	transactionStartDate: {
 		value: '',
+		displayErrors: {
+			isStartDateError: false,
+			greaterThanToday: false,
+		},
 		valid: true,
+		touched: false,
 	},
 	transactionEndDate: {
 		value: '',
+		displayErrors: {
+			isEndDateError: false,
+			greaterThanToday: false,
+		},
 		valid: true,
+		touched: false,
 	},
 	probillerMemberId: {
 		value: '',
@@ -226,14 +237,62 @@ const reducer = (state = initialState, action) => {
 				},
 			});
 		}
-		case SET_TRANSACTION_START_PROPERTIES:
+		case SET_TRANSACTION_START_PROPERTIES: {
+			const [
+				startDateGreaterThanToday,
+				endDateGreaterThanToday,
+				isStartDateError,
+				isEndDateError,
+			] = validateStartEndDate(state, action.value, state.transactionEndDate.value);
 			return updateObject(state, {
-				transactionStartDate: { ...state.transactionStartDate, value: action.value },
+				transactionStartDate: {
+					value: action.value,
+					valid: !isStartDateError,
+					touched: action.value.length > 0,
+					displayErrors: {
+						isStartDateError: isStartDateError,
+						greaterThanToday: startDateGreaterThanToday,
+					},
+				},
+				transactionEndDate: {
+					...state.transactionEndDate,
+					valid: !isEndDateError,
+					touched: true,
+					displayErrors: {
+						isEndDateError: isEndDateError,
+						greaterThanToday: endDateGreaterThanToday,
+					},
+				},
 			});
-		case SET_TRANSACTION_END_PROPERTIES:
+		}
+		case SET_TRANSACTION_END_PROPERTIES: {
+			const [
+				startDateGreaterThanToday,
+				endDateGreaterThanToday,
+				isStartDateError,
+				isEndDateError,
+			] = validateStartEndDate(state, state.transactionStartDate.value, action.value);
 			return updateObject(state, {
-				transactionEndDate: { ...state.transactionEndDate, value: action.value },
+				transactionEndDate: {
+					value: action.value,
+					valid: !isEndDateError,
+					touched: action.value.length > 0,
+					displayErrors: {
+						isEndDateError: isEndDateError,
+						greaterThanToday: endDateGreaterThanToday,
+					},
+				},
+				transactionStartDate: {
+					...state.transactionStartDate,
+					valid: !isStartDateError,
+					touched: true,
+					displayErrors: {
+						isStartDateError: isStartDateError,
+						greaterThanToday: startDateGreaterThanToday,
+					},
+				},
 			});
+		}
 		case SET_PRO_MEM_ID_PROPERTIES: {
 			const isNumError = validateNumber(action.value);
 			return updateObject(state, {

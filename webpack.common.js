@@ -133,7 +133,7 @@ module.exports = (env, options) => {
 		},
 		plugins: [
 			new HtmlWebpackPlugin({
-				title: 'Webpack React',
+				title: 'Form Validation',
 				template: __dirname + '/src/index.html',
 				filename: 'index.html',
 				inject: 'body',
