@@ -109,62 +109,11 @@ export const validateEmail = (inputValue) => {
 	if (inputValue.trim().length === 0) {
 		isError = false;
 	} else if (
-		!/^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/.test(
-			inputValue.trim()
-		)
+		!/^([a-zA-Z0-9_\-\.]+)@(([a-zA-Z0-9\-]+\.)+)([a-zA-Z]{2,4})$/.test(inputValue.trim())
 	) {
 		isError = true;
 	}
 	return isError;
-};
-
-//set minimum date of the end date picker (exporting this method because it will be used to set the html)
-export const setMinimumEndDate = (startDate) => {
-	let minDate = '';
-	if (startDate.length > 0) {
-		minDate = startDate;
-	}
-	return minDate;
-};
-
-//set maximum date of the start date picker (exporting this method because it will be used to set the html)
-export const setMaximumStartDate = (endDate) => {
-	let maxDate = getDateInputFormat(new Date());
-	if (endDate.length > 0) {
-		maxDate = endDate;
-	}
-	return maxDate;
-};
-
-//validate start date is earlier than end date
-const validateStartDate = (startDate, endDate) => {
-	let isError = false;
-	if (Date.parse(startDate) > Date.parse(endDate)) {
-		isError = true;
-	}
-	return isError;
-};
-
-//validate end date is later than start date
-const validateEndDate = (startDate, endDate) => {
-	return Date.parse(endDate) < Date.parse(startDate);
-};
-
-//validate date is not greater than today's date
-const validateNotGreaterThanToday = (value) => {
-	return value > getDateInputFormat(new Date());
-};
-
-export const validateStartEndDate = (state, startDate, endDate) => {
-	let isStartDateError = false;
-	let isEndDateError = false;
-	const startDateGreaterThanToday = validateNotGreaterThanToday(startDate);
-	const endDateGreaterThanToday = validateNotGreaterThanToday(endDate);
-	if (startDate && endDate) {
-		isStartDateError = validateStartDate(startDate, endDate);
-		isEndDateError = validateEndDate(startDate, endDate);
-	}
-	return [startDateGreaterThanToday, endDateGreaterThanToday, isStartDateError, isEndDateError];
 };
 
 export const validateMaxSubscriptionError = (chosenCycle, validForValue, years) => {
@@ -241,4 +190,53 @@ export const validateTodayIsMinDate = (date) => {
 		isError = true;
 	}
 	return isError;
+};
+
+//set minimum date of the end date picker (exporting this method because it will be used to set the html)
+export const setMinimumEndDate = (startDate) => {
+	let minDate = '';
+	if (startDate.length > 0) {
+		minDate = startDate;
+	}
+	return minDate;
+};
+
+//set maximum date of the start date picker (exporting this method because it will be used to set the html)
+export const setMaximumStartDate = (endDate) => {
+	let maxDate = getDateInputFormat(new Date());
+	if (endDate.length > 0) {
+		maxDate = endDate;
+	}
+	return maxDate;
+};
+
+//validate start date is earlier than end date
+const validateStartDate = (startDate, endDate) => {
+	let isError = false;
+	if (Date.parse(startDate) > Date.parse(endDate)) {
+		isError = true;
+	}
+	return isError;
+};
+
+//validate end date is later than start date
+const validateEndDate = (startDate, endDate) => {
+	return Date.parse(endDate) < Date.parse(startDate);
+};
+
+//validate date is not greater than today's date
+const validateNotGreaterThanToday = (value) => {
+	return value > getDateInputFormat(new Date());
+};
+
+export const validateStartEndDate = (state, startDate, endDate) => {
+	let isStartDateError = false;
+	let isEndDateError = false;
+	const startDateGreaterThanToday = validateNotGreaterThanToday(startDate);
+	const endDateGreaterThanToday = validateNotGreaterThanToday(endDate);
+	if (startDate && endDate) {
+		isStartDateError = validateStartDate(startDate, endDate);
+		isEndDateError = validateEndDate(startDate, endDate);
+	}
+	return [startDateGreaterThanToday, endDateGreaterThanToday, isStartDateError, isEndDateError];
 };

@@ -1,5 +1,7 @@
+//moment JS
 import moment from 'moment';
 
+// return the given object without the provided key
 export const objectWithoutKey = (object, key) => {
 	const { [key]: deletedKey, ...otherKeys } = object;
 	return otherKeys;
@@ -38,12 +40,6 @@ export const getTargetDate = ({
 		return moment(today, 'YYYY-MM-DD HH:mm Z').format('MMM DD, YYYY');
 	}
 	return moment(today, 'YYYY-MM-DD HH:mm Z').format('MMM Do, YYYY');
-};
-
-//calculate how many days between 2 dates
-export const getDaysDifference = (toDate, fromDate) => {
-	const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
-	return Math.round(Math.abs((toDate.getTime() - fromDate.getTime()) / oneDay));
 };
 
 export const getCurrencySymbol = (currencyText) => {
@@ -137,4 +133,10 @@ export const getMonthString = (number) => {
 //return date for the date input type (2021-07-09)
 export const getDateInputFormat = (date) => {
 	return moment(date).format('YYYY-MM-DD');
+};
+
+//calculate how many days between 2 dates
+export const getDaysDifference = (toDate, fromDate) => {
+	const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+	return Math.round(Math.abs((toDate.getTime() - fromDate.getTime()) / oneDay));
 };
