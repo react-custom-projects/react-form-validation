@@ -1,5 +1,7 @@
 //moment JS
 import moment from 'moment';
+//lodash
+import { isEmpty } from 'lodash';
 
 // return the given object without the provided key
 export const objectWithoutKey = (object, key) => {
@@ -18,6 +20,7 @@ export const getTargetDate = ({
 	cycleType,
 	givenDate = new Date(),
 	isWithoutSuffix = false,
+	isBackendFormat = false,
 }) => {
 	let today = givenDate;
 	switch (cycleType) {
@@ -38,6 +41,9 @@ export const getTargetDate = ({
 	}
 	if (isWithoutSuffix) {
 		return moment(today, 'YYYY-MM-DD HH:mm Z').format('MMM DD, YYYY');
+	}
+	if (isBackendFormat) {
+		return getDateInputFormat(today);
 	}
 	return moment(today, 'YYYY-MM-DD HH:mm Z').format('MMM Do, YYYY');
 };
@@ -138,5 +144,81 @@ export const getDateInputFormat = (date) => {
 //calculate how many days between 2 dates
 export const getDaysDifference = (toDate, fromDate) => {
 	const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
-	return Math.round(Math.abs((toDate.getTime() - fromDate.getTime()) / oneDay));
+	return Math.ceil(Math.abs((toDate.getTime() - fromDate.getTime()) / oneDay));
+};
+
+//sort the given array of object based on an object property
+export const sortArrayBasedOnObjectProperty = ({ array, objectProperty }) =>
+	array.sort((a, b) => {
+		if (a[objectProperty] < b[objectProperty]) {
+			return -1;
+		}
+		if (a[objectProperty] > b[objectProperty]) {
+			return 1;
+		}
+		return 0;
+	});
+
+//returns an object of arrays based on the given key
+export const groupBy = ({ array, key }) => {
+	return array.reduce((result, currentValue) => {
+		(result[currentValue[key]] = result[currentValue[key]] || []).push(currentValue);
+		return result;
+	}, {});
+};
+
+//returns an object of query params
+export const getQueryParams = (params) => {
+	const queryParams = new URLSearchParams(params),
+		paramsObj = {};
+
+	for (let [key, value] of queryParams.entries()) {
+		paramsObj[key] = value;
+	}
+	return paramsObj;
+};
+
+export const getAvailableGroups = () => {
+	return {
+		technical: {
+			id: 3,
+			name: 'technical',
+			roles: ['ROLE_AGENT'],
+		},
+		billing: {
+			id: 4,
+			name: 'billing',
+			roles: ['ROLE_AGENT'],
+		},
+		'free account': {
+			id: 11,
+			name: 'free account',
+			roles: ['ROLE_FREE_ACCOUNT'],
+		},
+	};
+};
+
+export const checkIfUserIsAdmin = (currentLoggedInUser) => {
+	const adminRoles = ['ROLE_ADMIN', 'ROLE_AGENT'];
+
+	if (isEmpty(currentLoggedInUser)) {
+		return false;
+	}
+	return adminRoles.every((el) => currentLoggedInUser.roles.indexOf(el) !== -1);
+};
+
+export const checkIfUserIsAnAgent = (currentLoggedInUser) => {
+	const agentRoles = ['ROLE_AGENT', 'ROLE_USER'];
+
+	if (isEmpty(currentLoggedInUser)) {
+		return false;
+	}
+	return agentRoles.every((el) => currentLoggedInUser.roles.indexOf(el) !== -1);
+};
+
+export const checkIfUserIsFreeAccount = (currentLoggedInUser) => {
+	if (isEmpty(currentLoggedInUser)) {
+		return false;
+	}
+	return !!currentLoggedInUser.roles.find((el) => el === 'ROLE_FREE_ACCOUNT');
 };
